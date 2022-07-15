@@ -1,50 +1,35 @@
-import React, { Component } from "react"
-import logo from "./logo.svg"
-import "./App.css"
+import './App.css';
+import { HashRouter, Route, Routes} from 'react-router-dom';
+import NavBar from './components/NavBar';
+import CreateAccount from './components/CreateAccount';
+import Login from './components/Login';
+import UserContext from './components/UserContext';
+import Home from './components/Home';
+import Deposit from './components/Deposit';
+import AllData from './components/AllData';
+import Withdraw from './components/Withdraw';
+import Balance from './components/Balance';
 
-class LambdaDemo extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { loading: false, msg: null }
-  }
-
-  handleClick = api => e => {
-    e.preventDefault()
-
-    this.setState({ loading: true })
-    fetch("/.netlify/functions/" + api)
-      .then(response => response.json())
-      .then(json => this.setState({ loading: false, msg: json.msg }))
-  }
-
-  render() {
-    const { loading, msg } = this.state
+function App() {
 
     return (
-      <p>
-        <button onClick={this.handleClick("hello")}>{loading ? "Loading..." : "Call Lambda"}</button>
-        <button onClick={this.handleClick("async-dadjoke")}>{loading ? "Loading..." : "Call Async Lambda"}</button>
-        <br />
-        <span>{msg}</span>
-      </p>
-    )
-  }
+        <HashRouter>
+            <NavBar/>
+            <UserContext.Provider value={{users:[{name: '', email: '', password: '', balance: 0}]}}>
+                <div className="container" style={{padding: "20px"}}>
+                    <Routes>
+                        <Route path="/" exact element={<Home/>} />
+                        <Route path="/CreateAccount/" element={<CreateAccount/>} />
+                        <Route path="/login/" element={<Login/>} />
+                        <Route path="/deposit/" element={<Deposit/>} />
+                        <Route path="/withdraw/" element={<Withdraw/>} />
+                        <Route path="/balance/" element={<Balance/>} />
+                        <Route path="/alldata/" element={<AllData/>} />
+                    </Routes>
+                </div>
+            </UserContext.Provider>
+        </HashRouter>
+    );
 }
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <LambdaDemo />
-        </header>
-      </div>
-    )
-  }
-}
-
-export default App
+export default App;
